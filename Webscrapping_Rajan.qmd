@@ -122,3 +122,55 @@ names(census_data)
 # Check number of rows and columns
 dim(census_data)
 ```
+
+## Part 4: Data Cleaning
+
+The original Census dataset contains 38 variables. For this assignment, I will select the 10 required variables and rename them to make the dataset easier to understand and analyze.
+
+```{r}
+
+
+# Rename and select the required Census variables
+library(tidyverse)
+census_clean <- census_data %>%
+  rename(
+    gisjoin = GISJOIN,
+    year = YEAR,
+    state_abbr = STUSAB,
+    division = DIVISIONA,
+    region = REGIONA,
+    state_name = STATE,
+    state_code = STATEA,
+    land_area = AREALAND,
+    water_area = AREAWAT,
+    total_pop = ET1001
+  ) %>%
+  select(
+    gisjoin,
+    year,
+    state_abbr,
+    division,
+    region,
+    state_name,
+    state_code,
+    land_area,
+    water_area,
+    total_pop
+  )
+
+# Display the cleaned dataset
+head(census_clean)
+
+```
+
+```{r}
+
+# Check the number of rows and columns
+dim(census_clean)
+
+# Check variable names
+names(census_clean)
+
+# Check data types
+str(census_clean)
+```

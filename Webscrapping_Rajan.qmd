@@ -1,8 +1,41 @@
 ---
-title: "Webscrapping Assignment"
+title: "Assignment 4: Web Scraping"
 author: "Ananya Rajan"
-format: html
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
 editor: visual
 ---
 
-## 
+# Introduction
+
+The purpose of this assignment is to explore data collection using web scraping and APIs in R.
+
+In Section 1, I will use the IPUMS NHGIS API to access 1990 U.S. Census population data, clean the dataset, and calculate population density and water share.
+
+In Section 2, I will use the rvest package to scrape population data from Wikipedia. I will clean the table, convert variables to appropriate data types, and handle missing values.
+
+# Section 1: 1990 Census Data
+
+## Part 1: Load Packages
+
+```{r}
+#| label: Load Packages
+
+# Install pacman if needed
+if (!requireNamespace("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+# Load required packages
+pacman::p_load(
+  ipumsr,
+  rvest,
+  tidyverse,
+  xml2,
+  janitor
+)
+```
+

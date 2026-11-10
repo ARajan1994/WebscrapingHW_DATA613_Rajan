@@ -24,18 +24,101 @@ In Section 2, I will use the rvest package to scrape population data from Wikipe
 ```{r}
 #| label: Load Packages
 
-# Install pacman if needed
-if (!requireNamespace("pacman", quietly = TRUE)) {
-  install.packages("pacman")
-}
-
 # Load required packages
-pacman::p_load(
-  ipumsr,
-  rvest,
-  tidyverse,
-  xml2,
-  janitor
-)
+# Load required packages
+library(ipumsr)
+library(rvest)
+library(tidyverse)
+library(xml2)
+library(janitor)
 ```
 
+## Part 2: IPUMS Authentication
+
+I will use the IPUMS NHGIS API to access the 1990 Decennial Census data. The dataset used is 1990_STF1, and the table selected is NP1, which contains state population information.
+
+```{r}
+
+# Load IPUMS package
+library(ipumsr)
+
+# Set API key from environment variable
+ipumsr::set_ipums_api_key(
+  Sys.getenv("IPUMS_API_KEY"),
+  save = FALSE
+)
+
+# Check that API key is available
+nzchar(Sys.getenv("IPUMS_API_KEY"))
+
+```
+
+## Part 3: Extract 1990 Census Data
+
+I will use the IPUMS NHGIS API to extract the 1990 Decennial Census data. The extract will include the NP1 table from the 1990_STF1 dataset for all U.S. states.
+
+```{r}
+
+# Define the NHGIS extract
+nhgis_extract <- define_extract_agg(
+  collection = "nhgis",
+  description = "1990 State Population NP1",
+  datasets = ds_spec(
+    "1990_STF1",
+    data_tables = "NP1",
+    geog_levels = "state"
+  ),
+  data_format = "csv_header"
+)
+
+# View extract details
+nhgis_extract
+```
+
+```{r}
+
+# Submit the NHGIS extract
+submitted_extract <- submit_extract(nhgis_extract)
+
+# View submission information
+submitted_extract
+```
+
+```{r}
+
+# Wait for IPUMS to finish processing
+downloadable_extract <- wait_for_extract(submitted_extract)
+
+# View extract status
+downloadable_extract
+```
+
+```{r}
+
+# Download the completed NHGIS extract
+nhgis_files <- download_extract(downloadable_extract)
+
+# Check downloaded files
+nhgis_files
+```
+
+```{r}
+
+# Read the downloaded Census data
+census_data <- read_nhgis(nhgis_files)
+
+# Display the first six rows
+head(census_data)
+```
+
+```{r}
+
+# Check the structure of the dataset
+str(census_data)
+
+# View all column names
+names(census_data)
+
+# Check number of rows and columns
+dim(census_data)
+```

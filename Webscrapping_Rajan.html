@@ -2212,6 +2212,8 @@ vertical-align: -.125em;
   <li><a href="#section-1-1990-census-data" id="toc-section-1-1990-census-data" class="nav-link" data-scroll-target="#section-1-1990-census-data">Section 1: 1990 Census Data</a>
   <ul class="collapse">
   <li><a href="#part-1-load-packages" id="toc-part-1-load-packages" class="nav-link" data-scroll-target="#part-1-load-packages">Part 1: Load Packages</a></li>
+  <li><a href="#part-2-ipums-authentication" id="toc-part-2-ipums-authentication" class="nav-link" data-scroll-target="#part-2-ipums-authentication">Part 2: IPUMS Authentication</a></li>
+  <li><a href="#part-3-extract-1990-census-data" id="toc-part-3-extract-1990-census-data" class="nav-link" data-scroll-target="#part-3-extract-1990-census-data">Part 3: Extract 1990 Census Data</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2254,30 +2256,374 @@ vertical-align: -.125em;
 <section id="part-1-load-packages" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-load-packages">Part 1: Load Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pacman if needed</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;pacman&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  ipumsr,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  rvest,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  tidyverse,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  xml2,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  janitor</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ipumsr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>also installing the dependencies &#39;BH&#39;, &#39;hipread&#39;, &#39;zeallot&#39;</code></pre>
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.0     ✔ readr     2.1.6
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter()         masks stats::filter()
+✖ readr::guess_encoding() masks rvest::guess_encoding()
+✖ dplyr::lag()            masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xml2)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;janitor&#39;
+
+The following objects are masked from &#39;package:stats&#39;:
+
+    chisq.test, fisher.test</code></pre>
+</div>
+</div>
+</section>
+<section id="part-2-ipums-authentication" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-ipums-authentication">Part 2: IPUMS Authentication</h2>
+<p>I will use the IPUMS NHGIS API to access the 1990 Decennial Census data. The dataset used is 1990_STF1, and the table selected is NP1, which contains state population information.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load IPUMS package</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ipumsr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set API key from environment variable</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ipumsr<span class="sc">::</span><span class="fu">set_ipums_api_key</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.getenv</span>(<span class="st">&quot;IPUMS_API_KEY&quot;</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">save =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The environment variable IPUMS_API_KEY has been set. To save it for future sessions, set `save = TRUE`.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that API key is available</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;IPUMS_API_KEY&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="part-3-extract-1990-census-data" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-extract-1990-census-data">Part 3: Extract 1990 Census Data</h2>
+<p>I will use the IPUMS NHGIS API to extract the 1990 Decennial Census data. The extract will include the NP1 table from the 1990_STF1 dataset for all U.S. states.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the NHGIS extract</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>nhgis_extract <span class="ot">&lt;-</span> <span class="fu">define_extract_agg</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">collection =</span> <span class="st">&quot;nhgis&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;1990 State Population NP1&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">datasets =</span> <span class="fu">ds_spec</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;1990_STF1&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_tables =</span> <span class="st">&quot;NP1&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">geog_levels =</span> <span class="st">&quot;state&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_format =</span> <span class="st">&quot;csv_header&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># View extract details</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>nhgis_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unsubmitted IPUMS NHGIS extract 
+Description: 1990 State Population NP1
+
+Dataset: 1990_STF1
+  Tables: NP1
+  Geog Levels: state</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit the NHGIS extract</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>submitted_extract <span class="ot">&lt;-</span> <span class="fu">submit_extract</span>(nhgis_extract)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Successfully submitted IPUMS NHGIS extract number 2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View submission information</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>submitted_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Submitted IPUMS NHGIS extract number 2
+Description: 1990 State Population NP1
+
+Dataset: 1990_STF1
+  Tables: NP1
+  Geog Levels: state</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait for IPUMS to finish processing</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>downloadable_extract <span class="ot">&lt;-</span> <span class="fu">wait_for_extract</span>(submitted_extract)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Checking extract status...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting 10 seconds...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Checking extract status...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting 20 seconds...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Checking extract status...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>IPUMS NHGIS extract 2 is ready to download.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View extract status</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>downloadable_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Submitted IPUMS NHGIS extract number 2
+Description: 1990 State Population NP1
+
+Dataset: 1990_STF1
+  Tables: NP1
+  Geog Levels: state
+  Breakdowns: bs09.ge00</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the completed NHGIS extract</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>nhgis_files <span class="ot">&lt;-</span> <span class="fu">download_extract</span>(downloadable_extract)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-The downloaded binary packages are in
-    /var/folders/7k/ckl73zjd77x4j18r6qv0z91w0000gn/T//RtmpGVIWNt/downloaded_packages</code></pre>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>
-ipumsr installed</code></pre>
+<pre><code>Data file saved to /Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0002_csv.zip</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check downloaded files</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>nhgis_files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                         data 
+&quot;/Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0002_csv.zip&quot; </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the downloaded Census data</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>census_data <span class="ot">&lt;-</span> <span class="fu">read_nhgis</span>(nhgis_files)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `read_nhgis()` was deprecated in ipumsr 0.9.0.
+ℹ Please use `read_ipums_agg()` instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Use of data from IPUMS NHGIS is subject to conditions including that users should cite the data appropriately. Use command `ipums_conditions()` for more details.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 51 Columns: 38
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (9): GISJOIN, STUSAB, STATE, STATEA, AREALAND, AREAWAT, ANPSADPI, FUNCS...
+dbl  (6): YEAR, DIVISIONA, REGIONA, INTPTLAT, INTPTLNG, ET1001
+lgl (23): ANRCA, AIANHHA, RES_ONLYA, TRUSTA, AIANCC, RES_TRSTA, BLOCKA, BLCK...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first six rows</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(census_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 38
+  GISJOIN  YEAR STUSAB ANRCA AIANHHA RES_ONLYA TRUSTA AIANCC RES_TRSTA BLOCKA
+  &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;lgl&gt; &lt;lgl&gt;   &lt;lgl&gt;     &lt;lgl&gt;  &lt;lgl&gt;  &lt;lgl&gt;     &lt;lgl&gt; 
+1 G010     1990 AL     NA    NA      NA        NA     NA     NA        NA    
+2 G020     1990 AK     NA    NA      NA        NA     NA     NA        NA    
+3 G040     1990 AZ     NA    NA      NA        NA     NA     NA        NA    
+4 G050     1990 AR     NA    NA      NA        NA     NA     NA        NA    
+5 G060     1990 CA     NA    NA      NA        NA     NA     NA        NA    
+6 G080     1990 CO     NA    NA      NA        NA     NA     NA        NA    
+# ℹ 28 more variables: BLCK_GRPA &lt;lgl&gt;, TRACTA &lt;lgl&gt;, CD101A &lt;lgl&gt;,
+#   C_CITYA &lt;lgl&gt;, CMSA &lt;lgl&gt;, COUNTYA &lt;lgl&gt;, CTY_SUBA &lt;lgl&gt;, COUSUBCC &lt;lgl&gt;,
+#   DIVISIONA &lt;dbl&gt;, MSA_CMSAA &lt;lgl&gt;, PLACEA &lt;lgl&gt;, PLACECC &lt;lgl&gt;,
+#   PLACEDC &lt;lgl&gt;, PMSAA &lt;lgl&gt;, REGIONA &lt;dbl&gt;, STATE &lt;chr&gt;, STATEA &lt;chr&gt;,
+#   URBRURALA &lt;lgl&gt;, URB_AREAA &lt;lgl&gt;, CD103A &lt;lgl&gt;, AREALAND &lt;chr&gt;,
+#   AREAWAT &lt;chr&gt;, ANPSADPI &lt;chr&gt;, FUNCSTAT &lt;chr&gt;, INTPTLAT &lt;dbl&gt;,
+#   INTPTLNG &lt;dbl&gt;, PSADC &lt;chr&gt;, ET1001 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the structure of the dataset</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(census_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>spc_tbl_ [51 × 38] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+ $ GISJOIN  : chr [1:51] &quot;G010&quot; &quot;G020&quot; &quot;G040&quot; &quot;G050&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;GIS Join Match Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ YEAR     : num [1:51] 1990 1990 1990 1990 1990 1990 1990 1990 1990 1990 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Data File Year&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ STUSAB   : chr [1:51] &quot;AL&quot; &quot;AK&quot; &quot;AZ&quot; &quot;AR&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;State/US Abbreviation&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ ANRCA    : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Alaska Native Regional Corporation Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ AIANHHA  : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;American Indian Area/Alaska Native Area/Hawaiian Home Land Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ RES_ONLYA: logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;American Indian Reservation [excluding trust lands] Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ TRUSTA   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;American Indian Reservation [trust lands only] Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ AIANCC   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;American Indian/Alaska Native Area Class Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ RES_TRSTA: logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Reservation/Trust Lands Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ BLOCKA   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Block Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ BLCK_GRPA: logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Block Group Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ TRACTA   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Census Tract Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ CD101A   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Congressional District (101st) Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ C_CITYA  : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Consolidated City Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ CMSA     : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Consolidated Metropolitan Statistical Area&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ COUNTYA  : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;County Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ CTY_SUBA : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;County Subdivision Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ COUSUBCC : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;County Subdivision Class Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ DIVISIONA: num [1:51] 6 9 8 7 9 8 1 5 5 5 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Division Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ MSA_CMSAA: logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Metropolitan Statistical Area/Consolidated Metropolitan Statistical Area Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ PLACEA   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Place Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ PLACECC  : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Place Class Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ PLACEDC  : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Place Description Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ PMSAA    : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Primary Metropolitan Statistical Area Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ REGIONA  : num [1:51] 3 4 4 3 4 4 1 3 3 3 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Region Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ STATE    : chr [1:51] &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; &quot;Arkansas&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;State Name&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ STATEA   : chr [1:51] &quot;01&quot; &quot;02&quot; &quot;04&quot; &quot;05&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;State Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ URBRURALA: logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Urban/Rural Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ URB_AREAA: logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Urban Area Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ CD103A   : logi [1:51] NA NA NA NA NA NA ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Congressional District (103rd) Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ AREALAND : chr [1:51] &quot;0131443117&quot; &quot;1477267515&quot; &quot;0294333362&quot; &quot;0134875069&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Area (land)&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ AREAWAT  : chr [1:51] &quot;0004332265&quot; &quot;0222870598&quot; &quot;0000942772&quot; &quot;0002867313&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Area (Water)&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ ANPSADPI : chr [1:51] &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; &quot;Arkansas&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Area Name/PSAD Term/Part Indicator&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ FUNCSTAT : chr [1:51] &quot;A&quot; &quot;A&quot; &quot;A&quot; &quot;A&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Functional Status Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ INTPTLAT : num [1:51] 32844987 65285776 34595236 34770100 37219685 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Internal Point (latitude)&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ INTPTLNG : num [1:51] -8.67e+07 -1.52e+08 -1.13e+08 -9.23e+07 -1.20e+08 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Internal Point (longitude)&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ PSADC    : chr [1:51] &quot;01&quot; &quot;01&quot; &quot;01&quot; &quot;01&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Political/Statistical Area Description Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ ET1001   : num [1:51] 4040587 550043 3665228 2350725 29760021 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Total area: Total&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;Table ET1: Persons (Universe: Persons)&quot;
+ - attr(*, &quot;spec&quot;)=
+  .. cols(
+  ..   GISJOIN = col_character(),
+  ..   YEAR = col_double(),
+  ..   STUSAB = col_character(),
+  ..   ANRCA = col_logical(),
+  ..   AIANHHA = col_logical(),
+  ..   RES_ONLYA = col_logical(),
+  ..   TRUSTA = col_logical(),
+  ..   AIANCC = col_logical(),
+  ..   RES_TRSTA = col_logical(),
+  ..   BLOCKA = col_logical(),
+  ..   BLCK_GRPA = col_logical(),
+  ..   TRACTA = col_logical(),
+  ..   CD101A = col_logical(),
+  ..   C_CITYA = col_logical(),
+  ..   CMSA = col_logical(),
+  ..   COUNTYA = col_logical(),
+  ..   CTY_SUBA = col_logical(),
+  ..   COUSUBCC = col_logical(),
+  ..   DIVISIONA = col_double(),
+  ..   MSA_CMSAA = col_logical(),
+  ..   PLACEA = col_logical(),
+  ..   PLACECC = col_logical(),
+  ..   PLACEDC = col_logical(),
+  ..   PMSAA = col_logical(),
+  ..   REGIONA = col_double(),
+  ..   STATE = col_character(),
+  ..   STATEA = col_character(),
+  ..   URBRURALA = col_logical(),
+  ..   URB_AREAA = col_logical(),
+  ..   CD103A = col_logical(),
+  ..   AREALAND = col_character(),
+  ..   AREAWAT = col_character(),
+  ..   ANPSADPI = col_character(),
+  ..   FUNCSTAT = col_character(),
+  ..   INTPTLAT = col_double(),
+  ..   INTPTLNG = col_double(),
+  ..   PSADC = col_character(),
+  ..   ET1001 = col_double()
+  .. )
+ - attr(*, &quot;problems&quot;)=&lt;externalptr&gt; </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View all column names</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(census_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] &quot;GISJOIN&quot;   &quot;YEAR&quot;      &quot;STUSAB&quot;    &quot;ANRCA&quot;     &quot;AIANHHA&quot;   &quot;RES_ONLYA&quot;
+ [7] &quot;TRUSTA&quot;    &quot;AIANCC&quot;    &quot;RES_TRSTA&quot; &quot;BLOCKA&quot;    &quot;BLCK_GRPA&quot; &quot;TRACTA&quot;   
+[13] &quot;CD101A&quot;    &quot;C_CITYA&quot;   &quot;CMSA&quot;      &quot;COUNTYA&quot;   &quot;CTY_SUBA&quot;  &quot;COUSUBCC&quot; 
+[19] &quot;DIVISIONA&quot; &quot;MSA_CMSAA&quot; &quot;PLACEA&quot;    &quot;PLACECC&quot;   &quot;PLACEDC&quot;   &quot;PMSAA&quot;    
+[25] &quot;REGIONA&quot;   &quot;STATE&quot;     &quot;STATEA&quot;    &quot;URBRURALA&quot; &quot;URB_AREAA&quot; &quot;CD103A&quot;   
+[31] &quot;AREALAND&quot;  &quot;AREAWAT&quot;   &quot;ANPSADPI&quot;  &quot;FUNCSTAT&quot;  &quot;INTPTLAT&quot;  &quot;INTPTLNG&quot; 
+[37] &quot;PSADC&quot;     &quot;ET1001&quot;   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check number of rows and columns</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(census_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 51 38</code></pre>
 </div>
 </div>
 </section>

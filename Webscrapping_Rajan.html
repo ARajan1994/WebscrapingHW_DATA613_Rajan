@@ -2215,6 +2215,8 @@ vertical-align: -.125em;
   <li><a href="#part-2-ipums-authentication" id="toc-part-2-ipums-authentication" class="nav-link" data-scroll-target="#part-2-ipums-authentication">Part 2: IPUMS Authentication</a></li>
   <li><a href="#part-3-extract-1990-census-data" id="toc-part-3-extract-1990-census-data" class="nav-link" data-scroll-target="#part-3-extract-1990-census-data">Part 3: Extract 1990 Census Data</a></li>
   <li><a href="#part-4-data-cleaning" id="toc-part-4-data-cleaning" class="nav-link" data-scroll-target="#part-4-data-cleaning">Part 4: Data Cleaning</a></li>
+  <li><a href="#part-5-calculate-population-density-and-water-share" id="toc-part-5-calculate-population-density-and-water-share" class="nav-link" data-scroll-target="#part-5-calculate-population-density-and-water-share">Part 5: Calculate Population Density and Water Share</a></li>
+  <li><a href="#part-6-find-water-share" id="toc-part-6-find-water-share" class="nav-link" data-scroll-target="#part-6-find-water-share">Part 6: Find Water Share</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2340,12 +2342,12 @@ Dataset: 1990_STF1
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit the NHGIS extract</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>submitted_extract <span class="ot">&lt;-</span> <span class="fu">submit_extract</span>(nhgis_extract)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Successfully submitted IPUMS NHGIS extract number 3</code></pre>
+<pre><code>Successfully submitted IPUMS NHGIS extract number 4</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View submission information</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>submitted_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Submitted IPUMS NHGIS extract number 3
+<pre><code>Submitted IPUMS NHGIS extract number 4
 Description: 1990 State Population NP1
 
 Dataset: 1990_STF1
@@ -2372,12 +2374,12 @@ Dataset: 1990_STF1
 <pre><code>Checking extract status...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>IPUMS NHGIS extract 3 is ready to download.</code></pre>
+<pre><code>IPUMS NHGIS extract 4 is ready to download.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View extract status</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>downloadable_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Submitted IPUMS NHGIS extract number 3
+<pre><code>Submitted IPUMS NHGIS extract number 4
 Description: 1990 State Population NP1
 
 Dataset: 1990_STF1
@@ -2397,13 +2399,13 @@ Dataset: 1990_STF1
   |======================================================================| 100%</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Data file saved to /Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0003_csv.zip</code></pre>
+<pre><code>Data file saved to /Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0004_csv.zip</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check downloaded files</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>nhgis_files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                                                         data 
-&quot;/Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0003_csv.zip&quot; </code></pre>
+&quot;/Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0004_csv.zip&quot; </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -2721,6 +2723,95 @@ lgl (23): ANRCA, AIANHHA, RES_ONLYA, TRUSTA, AIANCC, RES_TRSTA, BLOCKA, BLCK...
  $ total_pop : num [1:51] 4040587 550043 3665228 2350725 29760021 ...
   ..- attr(*, &quot;label&quot;)= chr &quot;Total area: Total&quot;
   ..- attr(*, &quot;var_desc&quot;)= chr &quot;Table ET1: Persons (Universe: Persons)&quot;</code></pre>
+</div>
+</div>
+</section>
+<section id="part-5-calculate-population-density-and-water-share" class="level2">
+<h2 class="anchored" data-anchor-id="part-5-calculate-population-density-and-water-share">Part 5: Calculate Population Density and Water Share</h2>
+<p>In this section, we will calculate two additional variables for each state using the cleaned Census data. Population density measures the number of people per unit of land area. It is calculated by dividing the total population by the land area. Water share measures the proportion of a state’s total area that is covered by water. It is calculated by dividing the water area by the combined land and water area. These calculations will help us compare population distribution and the proportion of water area across states.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>census_clean <span class="ot">&lt;-</span> census_clean <span class="sc">%&gt;%</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_pop =</span> <span class="fu">as.numeric</span>(total_pop),</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">land_area =</span> <span class="fu">as.numeric</span>(land_area),</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">water_area =</span> <span class="fu">as.numeric</span>(water_area)</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(census_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [51 × 10] (S3: tbl_df/tbl/data.frame)
+ $ gisjoin   : chr [1:51] &quot;G010&quot; &quot;G020&quot; &quot;G040&quot; &quot;G050&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;GIS Join Match Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ year      : num [1:51] 1990 1990 1990 1990 1990 1990 1990 1990 1990 1990 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Data File Year&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ state_abbr: chr [1:51] &quot;AL&quot; &quot;AK&quot; &quot;AZ&quot; &quot;AR&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;State/US Abbreviation&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ division  : num [1:51] 6 9 8 7 9 8 1 5 5 5 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Division Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ region    : num [1:51] 3 4 4 3 4 4 1 3 3 3 ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;Region Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ state_name: chr [1:51] &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; &quot;Arkansas&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;State Name&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ state_code: chr [1:51] &quot;01&quot; &quot;02&quot; &quot;04&quot; &quot;05&quot; ...
+  ..- attr(*, &quot;label&quot;)= chr &quot;State Code&quot;
+  ..- attr(*, &quot;var_desc&quot;)= chr &quot;&quot;
+ $ land_area : num [1:51] 1.31e+08 1.48e+09 2.94e+08 1.35e+08 4.04e+08 ...
+ $ water_area: num [1:51] 4.33e+06 2.23e+08 9.43e+05 2.87e+06 2.00e+07 ...
+ $ total_pop : num [1:51] 4040587 550043 3665228 2350725 29760021 ...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>census_clean <span class="ot">&lt;-</span> census_clean <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">population_density =</span> total_pop <span class="sc">/</span> land_area,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">water_share =</span> water_area <span class="sc">/</span> (land_area <span class="sc">+</span> water_area)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(census_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 12
+  gisjoin  year state_abbr division region state_name state_code  land_area
+  &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;           &lt;dbl&gt;
+1 G010     1990 AL                6      3 Alabama    01          131443117
+2 G020     1990 AK                9      4 Alaska     02         1477267515
+3 G040     1990 AZ                8      4 Arizona    04          294333362
+4 G050     1990 AR                7      3 Arkansas   05          134875069
+5 G060     1990 CA                9      4 California 06          403970679
+6 G080     1990 CO                8      4 Colorado   08          268657691
+# ℹ 4 more variables: water_area &lt;dbl&gt;, total_pop &lt;dbl&gt;,
+#   population_density &lt;dbl&gt;, water_share &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="part-6-find-water-share" class="level2">
+<h2 class="anchored" data-anchor-id="part-6-find-water-share">Part 6: Find Water Share</h2>
+<p>Water share represents the proportion of a state’s total geographic area that is covered by water. It is calculated by dividing the water area by the sum of the land area and water area. This calculation allows us to compare the percentage of water coverage across different states.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>census_clean <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">water_share_percent =</span> water_share <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(state_name, water_share_percent) <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(water_share_percent))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 51 × 2
+   state_name    water_share_percent
+   &lt;chr&gt;                       &lt;dbl&gt;
+ 1 Michigan                     41.3
+ 2 Hawaii                       41.2
+ 3 Rhode Island                 32.4
+ 4 Massachusetts                25.7
+ 5 Delaware                     21.5
+ 6 Maryland                     21.2
+ 7 Florida                      17.9
+ 8 Wisconsin                    17.1
+ 9 Louisiana                    16.0
+10 New Jersey                   14.9
+# ℹ 41 more rows</code></pre>
 </div>
 </div>
 </section>

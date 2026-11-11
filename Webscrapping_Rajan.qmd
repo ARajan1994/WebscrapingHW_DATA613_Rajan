@@ -200,3 +200,15 @@ census_clean <- census_clean %>%
 
 head(census_clean)
 ```
+
+## Part 6: Find Water Share
+
+Water share represents the proportion of a state's total geographic area that is covered by water. It is calculated by dividing the water area by the sum of the land area and water area. This calculation allows us to compare the percentage of water coverage across different states.
+
+```{r}
+
+census_clean %>%
+  mutate(water_share_percent = water_share * 100) %>%
+  select(state_name, water_share_percent) %>%
+  arrange(desc(water_share_percent))
+```

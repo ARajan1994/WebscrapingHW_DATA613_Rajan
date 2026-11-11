@@ -263,7 +263,6 @@ head(population_clean)
 
 ```
 
-
 ## Part 3: Correct Column Classes
 
 After cleaning and standardizing the Wikipedia table, we need to ensure that each column has the correct data type. Some numerical values may have been imported as character variables because they contain commas or percentage symbols. We will remove these formatting characters and convert the appropriate columns into numeric values. Rank columns will be converted to integers, while state and territory names will remain character variables.
@@ -291,3 +290,27 @@ str(population_clean)
 
 ```
 
+## Part 4: Handle Missing Values
+
+In this section, we will identify and handle missing values in the scraped population data. Some entries may contain placeholders such as em dashes (—) or double underscores (\_\_) instead of actual values. We will replace these placeholders with NA, which is R's standard representation for missing data. This will make the dataset more consistent and easier to analyze.
+
+```{r}
+
+# Replace missing-value placeholders with NA
+population_clean <- population_clean %>%
+  mutate(
+    across(
+      where(is.character),
+      ~ na_if(trimws(.x), "—")
+    )
+  ) %>%
+  mutate(
+    across(
+      where(is.character),
+      ~ na_if(.x, "__")
+    )
+  )
+
+# Count missing values in each column
+colSums(is.na(population_clean))
+```

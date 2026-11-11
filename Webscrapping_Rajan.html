@@ -2223,6 +2223,7 @@ vertical-align: -.125em;
   <li><a href="#part-1-import-the-wikipedia-table" id="toc-part-1-import-the-wikipedia-table" class="nav-link" data-scroll-target="#part-1-import-the-wikipedia-table">Part 1: Import the Wikipedia Table</a></li>
   <li><a href="#part-2-clean-and-standardize-the-data" id="toc-part-2-clean-and-standardize-the-data" class="nav-link" data-scroll-target="#part-2-clean-and-standardize-the-data">Part 2: Clean and Standardize the Data</a></li>
   <li><a href="#part-3-correct-column-classes" id="toc-part-3-correct-column-classes" class="nav-link" data-scroll-target="#part-3-correct-column-classes">Part 3: Correct Column Classes</a></li>
+  <li><a href="#part-4-handle-missing-values" id="toc-part-4-handle-missing-values" class="nav-link" data-scroll-target="#part-4-handle-missing-values">Part 4: Handle Missing Values</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2348,12 +2349,12 @@ Dataset: 1990_STF1
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit the NHGIS extract</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>submitted_extract <span class="ot">&lt;-</span> <span class="fu">submit_extract</span>(nhgis_extract)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Successfully submitted IPUMS NHGIS extract number 6</code></pre>
+<pre><code>Successfully submitted IPUMS NHGIS extract number 7</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View submission information</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>submitted_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Submitted IPUMS NHGIS extract number 6
+<pre><code>Submitted IPUMS NHGIS extract number 7
 Description: 1990 State Population NP1
 
 Dataset: 1990_STF1
@@ -2380,12 +2381,12 @@ Dataset: 1990_STF1
 <pre><code>Checking extract status...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>IPUMS NHGIS extract 6 is ready to download.</code></pre>
+<pre><code>IPUMS NHGIS extract 7 is ready to download.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View extract status</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>downloadable_extract</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Submitted IPUMS NHGIS extract number 6
+<pre><code>Submitted IPUMS NHGIS extract number 7
 Description: 1990 State Population NP1
 
 Dataset: 1990_STF1
@@ -2405,13 +2406,13 @@ Dataset: 1990_STF1
   |======================================================================| 100%</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Data file saved to /Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0006_csv.zip</code></pre>
+<pre><code>Data file saved to /Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0007_csv.zip</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check downloaded files</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>nhgis_files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                                                         data 
-&quot;/Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0006_csv.zip&quot; </code></pre>
+&quot;/Users/ananya/Documents/DATA613/Homework/HW_6/WebscrapingHW_DATA613_Rajan/nhgis0007_csv.zip&quot; </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -2941,6 +2942,39 @@ Caused by warning:
  $ pop_perseat_2020_a       : num [1:60] 760350 766987 769221 776971 764865 ...
  $ percent_us_2020          : num [1:60] 11.8 8.7 6.43 6.03 3.88 ...
  $ percent_ec_2020          : num [1:60] 10.04 7.43 5.58 5.2 3.53 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="part-4-handle-missing-values" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-handle-missing-values">Part 4: Handle Missing Values</h2>
+<p>In this section, we will identify and handle missing values in the scraped population data. Some entries may contain placeholders such as em dashes (—) or double underscores (__) instead of actual values. We will replace these placeholders with NA, which is R’s standard representation for missing data. This will make the dataset more consistent and easier to analyze.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace missing-value placeholders with NA</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>population_clean <span class="ot">&lt;-</span> population_clean <span class="sc">%&gt;%</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">where</span>(is.character),</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>      <span class="sc">~</span> <span class="fu">na_if</span>(<span class="fu">trimws</span>(.x), <span class="st">&quot;—&quot;</span>)</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">where</span>(is.character),</span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>      <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">&quot;__&quot;</span>)</span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Count missing values in each column</span></span>
+<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(population_clean))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        x        state_or_territory   census_population_8_9_a 
+                        0                         0                         5 
+census_population_8_9_a_2             house_seats_b           house_seats_b_2 
+                        0                         9                         6 
+  pop_perelec_vote_2020_c        pop_perseat_2020_a           percent_us_2020 
+                        6                         8                         0 
+          percent_ec_2020 
+                        6 </code></pre>
 </div>
 </div>
 </section>

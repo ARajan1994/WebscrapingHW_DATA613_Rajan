@@ -174,3 +174,29 @@ names(census_clean)
 # Check data types
 str(census_clean)
 ```
+
+## Part 5: Calculate Population Density and Water Share
+
+In this section, we will calculate two additional variables for each state using the cleaned Census data. Population density measures the number of people per unit of land area. It is calculated by dividing the total population by the land area. Water share measures the proportion of a state's total area that is covered by water. It is calculated by dividing the water area by the combined land and water area. These calculations will help us compare population distribution and the proportion of water area across states.
+
+```{r}
+
+library(tidyverse)
+
+census_clean <- census_clean %>%
+  mutate(
+    total_pop = as.numeric(total_pop),
+    land_area = as.numeric(land_area),
+    water_area = as.numeric(water_area)
+  )
+
+str(census_clean)
+
+census_clean <- census_clean %>%
+  mutate(
+    population_density = total_pop / land_area,
+    water_share = water_area / (land_area + water_area)
+  )
+
+head(census_clean)
+```

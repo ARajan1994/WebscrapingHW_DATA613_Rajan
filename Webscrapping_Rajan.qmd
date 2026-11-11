@@ -314,3 +314,22 @@ population_clean <- population_clean %>%
 # Count missing values in each column
 colSums(is.na(population_clean))
 ```
+
+## Part 5: Additional Data Checks
+
+In this section, we will perform additional checks on the scraped population data to ensure its accuracy and consistency. We will check for duplicate rows, examine the dimensions of the dataset, and review the first six observations. These checks will help confirm that the data was imported and cleaned properly.
+
+```{r}
+
+# Check for duplicated rows
+sum(duplicated(population_clean))
+
+# Check the number of rows and columns
+dim(population_clean)
+
+# Display the first six rows
+head(population_clean)
+
+# Display the column names
+names(population_clean)
+```

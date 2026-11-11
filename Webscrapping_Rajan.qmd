@@ -212,3 +212,54 @@ census_clean %>%
   select(state_name, water_share_percent) %>%
   arrange(desc(water_share_percent))
 ```
+
+# Section 2: Web Scraping U.S. Population Data
+
+In this section, we will use web scraping techniques in R to collect population data for U.S. states and territories from Wikipedia. Using the `rvest` package, we will extract the State and territory rankings table, clean and standardize the data, correct variable types, and handle missing values. This will prepare the scraped data for further analysis.
+
+## Part 1: Import the Wikipedia Table
+
+```{r}
+
+library(rvest)
+# URL of the Wikipedia page
+url <- "https://en.wikipedia.org/wiki/List_of_U.S._states_and_territories_by_population"
+
+# Read the webpage
+page <- read_html(url)
+
+# Locate the State and territory rankings table
+rankings_heading <- page %>%
+  html_element("#State_and_territory_rankings")
+
+population_raw <- rankings_heading %>%
+  html_element(xpath = "following::table[1]") %>%
+  html_table()
+
+# Display the first six rows
+head(population_raw)
+```
+
+## Part 2: Clean and Standardize the Data
+
+After importing the Wikipedia table, the next step is to clean and standardize the data. We will use the `clean_names()` function from the `janitor` package to convert the column names into lowercase, consistent, and easy-to-use names. We will also make sure that the first row is correctly recognized as the column headers rather than being treated as data.
+
+```{r}
+
+
+# Clean and standardize column names
+population_clean <- population_raw %>%
+  janitor::clean_names()
+
+# Remove the extra header row
+population_clean <- population_clean %>%
+  filter(state_or_territory != "State or territory")
+
+# Display the cleaned column names
+names(population_clean)
+
+# Display the first six rows
+head(population_clean)
+
+```
+
